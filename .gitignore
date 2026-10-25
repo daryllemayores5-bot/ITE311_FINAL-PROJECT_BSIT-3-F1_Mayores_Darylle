@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build files
+dist/
+.vite/
+
+# Environment files
+.env
+.env.*
+!.env.example
+*.local
+
+# Log files
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.idea/
