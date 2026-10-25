@@ -18,7 +18,7 @@ button { cursor: pointer; }
 button, a { touch-action: manipulation; }
 button { transition: background-color .15s, border-color .15s; }
 button:focus-visible, a:focus-visible { outline: 3px solid #839bff; outline-offset: 4px; }
-button:disabled { cursor: default; }
+button:disabled { cursor: default; opacity: .5; }
 svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { color: #202b43; }
@@ -138,7 +138,8 @@ textarea { resize: vertical; min-height: 90px; }
 .search-input { position: relative; }
 .search-input svg { width: 17px; height: 17px; position: absolute; top: 13px; left: 12px; color: #95a0b5; pointer-events: none; }
 .search-input input { padding-left: 38px; }
-.collection-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 26px 0 18px; min-height: 32px; }
+.collection-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin: 26px 0 18px; min-height: 32px; }
+.collection-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 14px; }
 .count-pill { padding: 3px 7px; background: #e9eefa; color: #6580ba; font-size: 10px; border-radius: 5px; vertical-align: middle; margin-left: 6px; }
 .form-panel { padding: 26px; background: white; border: 1px solid #dce3f2; border-radius: 11px; margin-bottom: 24px; box-shadow: 0 5px 18px #2c427405; }
 .form-heading { display: flex; justify-content: space-between; align-items: start; gap: 15px; padding-bottom: 22px; margin-bottom: 23px; border-bottom: 1px solid var(--border); }

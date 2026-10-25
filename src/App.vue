@@ -165,6 +165,34 @@ export default {
       if (this.editingEvent?.id === event.id) this.cancelEdit()
       this.notice = 'Event deleted successfully.'
     },
+    escapeCsvValue(value) {
+      // Quoted fields preserve commas and line breaks; double any embedded quotes.
+      return `"${String(value ?? '').replace(/"/g, '""')}"`
+    },
+    exportAllEvents() {
+      if (!this.events.length) return
+      this.refreshClock()
+      const headers = ['Title', 'Description', 'Category', 'Date', 'Start Time', 'End Time', 'Location', 'Organizer', 'Status']
+      // Use the full collection, regardless of the Events page's active filters.
+      const rows = this.eventsWithStatus.map(event => [
+        event.title, event.description, event.category, event.date,
+        event.startTime, event.endTime, event.location, event.organizer, event.status,
+      ])
+      const csv = [headers, ...rows]
+        .map(row => row.map(value => this.escapeCsvValue(value)).join(','))
+        .join('\r\n')
+      // The UTF-8 marker helps spreadsheet applications read non-English text.
+      const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = 'school-events.csv'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      // Give the browser time to begin downloading before releasing the URL.
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+    },
     cancelEdit() {
       this.showForm = false
       this.editingEvent = null
@@ -217,7 +245,7 @@ export default {
         <Dashboard v-if="activePage === 'Dashboard'" :statistics="statistics" :upcoming-events="upcomingEvents" :today-label="todayLabel" @add="openAddForm" @view-all="navigate('Events')" @edit="editEvent" @delete="deleteEvent" />
         <template v-else>
           <EventForm v-if="showForm" :key="editingEvent ? editingEvent.id : 'new'" :event="editingEvent" :categories="categories" @save="saveEvent" @cancel="cancelEdit" />
-          <EventList :events="eventsWithStatus" :categories="categories" @add="openAddForm" @edit="editEvent" @delete="deleteEvent" />
+          <EventList :events="eventsWithStatus" :categories="categories" @add="openAddForm" @edit="editEvent" @delete="deleteEvent" @export="exportAllEvents" />
         </template>
         <footer class="page-footer"><span>Made for a more organized campus.</span><span>School Event Management System</span></footer>
       </main>
