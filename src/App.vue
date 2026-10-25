@@ -27,6 +27,13 @@ export default {
     totalEvents() {
       return this.events.length
     },
+    categoryCounts() {
+      // Include every existing category, even when no events match it.
+      return this.categories.map(category => ({
+        category,
+        count: this.events.filter(event => event.category === category).length,
+      }))
+    },
     // Status is calculated for display only; it is never stored with an event.
     eventsWithStatus() {
       return this.events.map(event => ({ ...event, status: this.getEventStatus(event) }))
@@ -218,7 +225,7 @@ export default {
         <p v-if="notice" class="message message-success" role="status">{{ notice }}</p>
 
         <!-- v-if/v-else switches pages without Vue Router. -->
-        <Dashboard v-if="activePage === 'Dashboard'" :statistics="statistics" :upcoming-events="upcomingEvents" :today-label="todayLabel" @add="openAddForm" @view-all="navigate('Events')" @edit="editEvent" @delete="deleteEvent" />
+        <Dashboard v-if="activePage === 'Dashboard'" :statistics="statistics" :category-counts="categoryCounts" :upcoming-events="upcomingEvents" :today-label="todayLabel" @add="openAddForm" @view-all="navigate('Events')" @edit="editEvent" @delete="deleteEvent" />
         <template v-else>
           <EventForm v-if="showForm" :key="editingEvent ? editingEvent.id : 'new'" :event="editingEvent" :categories="categories" @save="saveEvent" @cancel="cancelEdit" />
           <EventList :events="eventsWithStatus" :categories="categories" @add="openAddForm" @edit="editEvent" @delete="deleteEvent" />

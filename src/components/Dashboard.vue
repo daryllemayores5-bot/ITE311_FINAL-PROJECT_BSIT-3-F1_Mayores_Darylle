@@ -5,6 +5,7 @@ export default {
   components: { EventCard },
   props: {
     statistics: { type: Object, required: true },
+    categoryCounts: { type: Array, required: true },
     upcomingEvents: { type: Array, required: true },
     todayLabel: { type: String, required: true },
   },
@@ -32,6 +33,13 @@ export default {
   <!-- Props flow from App to this component; interpolation displays each count. -->
   <section class="statistics-grid" aria-label="Event statistics">
     <article v-for="card in summaryCards" :key="card.key" :class="['stat-card', `stat-${card.color}`]"><div class="stat-top"><span>{{ card.label }}</span><span class="stat-icon" aria-hidden="true">{{ card.icon }}</span></div><strong class="stat-value">{{ statistics[card.key] }}</strong><p>{{ card.caption }}</p></article>
+  </section>
+
+  <section aria-labelledby="category-counts-title">
+    <div class="section-heading"><div><h2 id="category-counts-title">Events by category</h2><p>A breakdown of all your school events.</p></div><span class="subtle-label">All time</span></div>
+    <div class="statistics-grid">
+      <article v-for="item in categoryCounts" :key="item.category" class="stat-card stat-blue"><div class="stat-top"><span>{{ item.category }} Events</span><span class="stat-icon" aria-hidden="true">▦</span></div><strong class="stat-value">{{ item.count }}</strong></article>
+    </div>
   </section>
 
   <section aria-labelledby="coming-up-title">
