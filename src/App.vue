@@ -23,13 +23,17 @@ export default {
     }
   },
   computed: {
+    // Count the reactive events array, including events restored from localStorage.
+    totalEvents() {
+      return this.events.length
+    },
     // Status is calculated for display only; it is never stored with an event.
     eventsWithStatus() {
       return this.events.map(event => ({ ...event, status: this.getEventStatus(event) }))
     },
     statistics() {
       return {
-        total: this.events.length,
+        total: this.totalEvents,
         upcoming: this.eventsWithStatus.filter(event => event.status === 'Upcoming').length,
         ongoing: this.eventsWithStatus.filter(event => event.status === 'Ongoing').length,
         completed: this.eventsWithStatus.filter(event => event.status === 'Completed').length,
