@@ -128,7 +128,7 @@ h2 { font-size: 17px; letter-spacing: -.3px; font-weight: 650; }
 .event-description { padding: 13px; border-radius: 7px; margin-bottom: 16px; font-size: 11px; background: #f7f9fd; }
 .event-description strong { color: #55627b; font-size: 10px; }
 .event-description p { margin-top: 7px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; color: #6b778d; }
-.filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 18px; padding: 22px; background: white; border: 1px solid var(--border); border-radius: 11px; }
+.filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr 1.4fr; gap: 18px; padding: 22px; background: white; border: 1px solid var(--border); border-radius: 11px; }
 .field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .field label { font-size: 11px; font-weight: 600; color: #54617a; }
 input, select, textarea { width: 100%; border: 1px solid #dfe5ef; border-radius: 7px; padding: 11px 12px; background: white; font-size: 12px; line-height: 1.5; color: #36445f; min-width: 0; }
