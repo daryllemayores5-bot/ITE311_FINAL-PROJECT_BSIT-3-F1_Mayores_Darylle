@@ -170,11 +170,17 @@ export default {
       return `"${String(value ?? '').replace(/"/g, '""')}"`
     },
     exportAllEvents() {
-      if (!this.events.length) return
       this.refreshClock()
+      this.exportEventsToCsv(this.eventsWithStatus, 'school-events.csv')
+    },
+    exportFilteredEvents(events) {
+      this.exportEventsToCsv(events, 'filtered-school-events.csv')
+    },
+    exportEventsToCsv(events, filename) {
+      if (!events.length) return
       const headers = ['Title', 'Description', 'Category', 'Date', 'Start Time', 'End Time', 'Location', 'Organizer', 'Status']
-      // Use the full collection, regardless of the Events page's active filters.
-      const rows = this.eventsWithStatus.map(event => [
+      // Both export options share the same columns and CSV formatting.
+      const rows = events.map(event => [
         event.title, event.description, event.category, event.date,
         event.startTime, event.endTime, event.location, event.organizer, event.status,
       ])
@@ -186,7 +192,7 @@ export default {
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = 'school-events.csv'
+      link.download = filename
       document.body.appendChild(link)
       link.click()
       link.remove()
@@ -245,7 +251,7 @@ export default {
         <Dashboard v-if="activePage === 'Dashboard'" :statistics="statistics" :upcoming-events="upcomingEvents" :today-label="todayLabel" @add="openAddForm" @view-all="navigate('Events')" @edit="editEvent" @delete="deleteEvent" />
         <template v-else>
           <EventForm v-if="showForm" :key="editingEvent ? editingEvent.id : 'new'" :event="editingEvent" :categories="categories" @save="saveEvent" @cancel="cancelEdit" />
-          <EventList :events="eventsWithStatus" :categories="categories" @add="openAddForm" @edit="editEvent" @delete="deleteEvent" @export="exportAllEvents" />
+          <EventList :events="eventsWithStatus" :categories="categories" @add="openAddForm" @edit="editEvent" @delete="deleteEvent" @export="exportAllEvents" @export-filtered="exportFilteredEvents" />
         </template>
         <footer class="page-footer"><span>Made for a more organized campus.</span><span>School Event Management System</span></footer>
       </main>

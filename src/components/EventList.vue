@@ -7,7 +7,7 @@ export default {
     events: { type: Array, required: true },
     categories: { type: Array, required: true },
   },
-  emits: ['add', 'edit', 'delete', 'export'],
+  emits: ['add', 'edit', 'delete', 'export', 'export-filtered'],
   data() {
     return { searchQuery: '', selectedCategory: 'All', selectedStatus: 'All' }
   },
@@ -42,7 +42,7 @@ export default {
       <div class="field"><label for="category-filter">Category</label><select id="category-filter" v-model="selectedCategory"><option value="All">All categories</option><option v-for="category in categories" :key="category" :value="category">{{ category }}</option></select></div>
       <div class="field"><label for="status-filter">Status</label><select id="status-filter" v-model="selectedStatus"><option value="All">All statuses</option><option>Upcoming</option><option>Ongoing</option><option>Completed</option></select></div>
     </div>
-    <div class="collection-heading"><h2>All events <span class="count-pill">{{ filteredEvents.length }}</span></h2><div class="collection-actions"><button v-if="hasFilters" class="text-button" @click="resetFilters">Clear filters</button><span v-else class="subtle-label">Soonest first</span><button class="button button-secondary" :disabled="!events.length" @click="$emit('export')">Export CSV</button></div></div>
+    <div class="collection-heading"><h2>All events <span class="count-pill">{{ filteredEvents.length }}</span></h2><div class="collection-actions"><button v-if="hasFilters" class="text-button" @click="resetFilters">Clear filters</button><span v-else class="subtle-label">Soonest first</span><button class="button button-secondary" :disabled="!events.length" @click="$emit('export')">Export All CSV</button><button class="button button-secondary" :disabled="!filteredEvents.length" @click="$emit('export-filtered', filteredEvents)">Export Filtered CSV</button></div></div>
     <!-- Stable keys help Vue track cards correctly after an edit or deletion. -->
     <div v-if="filteredEvents.length" class="event-grid"><EventCard v-for="event in filteredEvents" :key="event.id" :event="event" @edit="$emit('edit', $event)" @delete="$emit('delete', $event)" /></div>
     <div v-else class="empty-state"><span class="empty-icon" aria-hidden="true">▦</span><h3>{{ events.length ? 'No matching events' : 'Your next great event starts here' }}</h3><p>{{ events.length ? 'Try a different title, category, or status.' : 'Keep every date, detail, and campus celebration in one place.' }}</p><button v-if="events.length" class="button button-secondary" @click="resetFilters">Clear filters</button><button v-else class="button button-primary" @click="$emit('add')"><span aria-hidden="true">＋</span> Add your first event</button></div>
