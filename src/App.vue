@@ -176,6 +176,40 @@ export default {
       if (this.editingEvent?.id === event.id) this.cancelEdit()
       this.notice = 'Event deleted successfully.'
     },
+    escapeCsvValue(value) {
+      // Quoted fields preserve commas and line breaks; double any embedded quotes.
+      return `"${String(value ?? '').replace(/"/g, '""')}"`
+    },
+    exportAllEvents() {
+      this.refreshClock()
+      this.exportEventsToCsv(this.eventsWithStatus, 'school-events.csv')
+    },
+    exportFilteredEvents(events) {
+      this.exportEventsToCsv(events, 'filtered-school-events.csv')
+    },
+    exportEventsToCsv(events, filename) {
+      if (!events.length) return
+      const headers = ['Title', 'Description', 'Category', 'Date', 'Start Time', 'End Time', 'Location', 'Organizer', 'Status']
+      // Both export options share the same columns and CSV formatting.
+      const rows = events.map(event => [
+        event.title, event.description, event.category, event.date,
+        event.startTime, event.endTime, event.location, event.organizer, event.status,
+      ])
+      const csv = [headers, ...rows]
+        .map(row => row.map(value => this.escapeCsvValue(value)).join(','))
+        .join('\r\n')
+      // The UTF-8 marker helps spreadsheet applications read non-English text.
+      const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      // Give the browser time to begin downloading before releasing the URL.
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+    },
     cancelEdit() {
       this.showForm = false
       this.editingEvent = null
@@ -228,7 +262,7 @@ export default {
         <Dashboard v-if="activePage === 'Dashboard'" :statistics="statistics" :category-counts="categoryCounts" :upcoming-events="upcomingEvents" :today-label="todayLabel" @add="openAddForm" @view-all="navigate('Events')" @edit="editEvent" @delete="deleteEvent" />
         <template v-else>
           <EventForm v-if="showForm" :key="editingEvent ? editingEvent.id : 'new'" :event="editingEvent" :categories="categories" @save="saveEvent" @cancel="cancelEdit" />
-          <EventList :events="eventsWithStatus" :categories="categories" @add="openAddForm" @edit="editEvent" @delete="deleteEvent" />
+          <EventList :events="eventsWithStatus" :categories="categories" @add="openAddForm" @edit="editEvent" @delete="deleteEvent" @export="exportAllEvents" @export-filtered="exportFilteredEvents" />
         </template>
         <footer class="page-footer"><span>Made for a more organized campus.</span><span>School Event Management System</span></footer>
       </main>
